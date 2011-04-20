@@ -170,7 +170,24 @@ int main(int argc, const char * argv[])
 	if (!fp) { fprintf( stderr, "gpp-error: can't create tmp file (%s)\n", cpp ); exit(101); }
     
 	addHeaders(fp);
+
+	int do_maths = 0;
+
 	fprintf( fp, "int main(int argc, const char * argv[]) {\n" );
+	
+	if (argc>1 && !strcmp(argv[1],"-m"))
+	{
+		int i;
+		fprintf( fp, "double res = (");
+	
+		for(i=2;i<argc;i++) fprintf( fp, "%s ", argv[i] );	
+
+		fprintf( fp, ");");
+
+		fprintf( fp, "if(trunc(res)==res) printf(\"%%d\\n\", (int)res ); else printf(\"%%f\\n\", res );" );
+	}
+	else
+	{
 	int e;	
 	for(e=1;e<argc-1;e++)
 	{
@@ -179,10 +196,12 @@ int main(int argc, const char * argv[])
             fprintf( fp, "%s\n", argv[e+1] ); e++;
         }
 	}
+	}
 	fprintf( fp, "}\n");
 	fclose(fp);
 	
 	int L = 0;
+	int e; 
 	for(e=0;e<argc;e++) L+=strlen(argv[e]);
 	char * cmd = new char [2*L+argc*100];
     
@@ -192,7 +211,6 @@ int main(int argc, const char * argv[])
 #endif
 	int r = system(cmd); 
 	if (r) { fprintf( stderr, "gpp-error: error compiling or linking (g++ returned %d)\n", r); remove(exe); remove(cpp); exit(102); }
-    
     
     
     
