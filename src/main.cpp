@@ -97,7 +97,12 @@ int executeMe( const char * exe, int argc, const char *argv[])
             w = waitpid(cpid, &status, WUNTRACED | WCONTINUED);
             if (w == -1) { perror("waitpid"); exit(EXIT_FAILURE); }
             if (WIFEXITED(status)) {
-                printf("exited, status=%d\n", WEXITSTATUS(status));
+        int rc =WEXITSTATUS(status);
+        remove(cpp);
+        remove(exe);
+        exit(rc);
+
+
             } else if (WIFSIGNALED(status)) {
                 printf("killed by signal %d\n", WTERMSIG(status));
             } else if (WIFSTOPPED(status)) {
