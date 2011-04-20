@@ -1,0 +1,11 @@
+to compile:
+	cd src
+	make
+
+to install
+	cd src
+	sudo make install
+
+to use with imagination:
+	gpp -e 'printf("%s",argv[1]);' "Hello world"
+
